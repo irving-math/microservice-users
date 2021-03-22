@@ -1,7 +1,7 @@
 import json
 
 from attr import asdict
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 
 from application.use_cases import UserCreator, UserRetriever
 from infraestructure.ram_repo import RamRepository
@@ -19,7 +19,9 @@ creator.create_user(user_name='user_3', password='abc', name='Pedro')
 def get_users(user_id):
     user_retriever = UserRetriever(ram_repository)
     user = user_retriever.get_user_by_id(user_id)
-    return jsonify(asdict(user))
+    if user is not None:
+        return jsonify(asdict(user))
+    abort(404)
 
 
 @app.route('/users/', methods=['POST'])
@@ -29,4 +31,4 @@ def create_users():
     return jsonify(asdict(user))
 
 
-app.run()
+app.run(host='0.0.0.0', port=5001, debug=True)

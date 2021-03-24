@@ -20,7 +20,9 @@ def get_users(user_id):
     user_retriever = UserRetriever(ram_repository)
     user = user_retriever.get_user_by_id(user_id)
     if user is not None:
-        return jsonify(asdict(user))
+        user_dict = asdict(user)
+        user_dict.pop('password')
+        return jsonify(user_dict)
     abort(404)
 
 
